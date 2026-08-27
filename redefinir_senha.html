@@ -5,25 +5,44 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redefinir Senha</title>
+    <link rel="stylesheet" href="assets/css/red_senha.css">
+    <script src="https://kit.fontawesome.com/3f21966000.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header>
-        <img src="assets/imagem/62be949d-18a4-492d-baa7-9aa6a30f362a(1).jpg" alt="Logo Smart Control" width="200" height="200">
+    <header id="cabecalho">
+        <div class="cabecalho-topo">
+            <button class="lampada-toggle" type="button" aria-label="Alternar modo escuro" title="Ativar modo escuro">
+                <img id="lampada" src="imagens/icone lapda.png" alt="Logo Smart Control">
+            </button>
+            <div class="cabecalho-direita">
+                <h1>Redefinir senha</h1>
+                <div class="bars-icon">
+                    <i class="fa-solid fa-bars"></i>
+                    <ul class="menu">
+                        <li><a href="index.html">Login</a></li>
+                        <li><a href="cadastro.html">Cadastro</a></li>
+                        <li><a href="redefinir_senha.html">Redefinir senha</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </header>
-    
-    <h1>Redefinir senha</h1>
 
-    <form>
-        <label for="email">Digite seu email para receber o código</label><br>
-        <input type="email" id="email" name="email" placeholder="Email" required><br>
-        <input type="submit" value="enviar"><br>
-    </form>
-        <label for="codigo">Digite o código enviado por email</label><br>
-        <input type="password" id="codigo" name="codigo" minlength="6" placeholder="Código" required><br>
-        <input type="submit" value="enter"><br>
-    <form>
+    <main class="container">
+        <section class="form-card">
+            <form id="formulario" action="index.html" method="get">
+                <label for="email">Digite seu e-mail para receber o código</label>
+                <input type="email" id="email" name="email" placeholder="Seu e-mail" required>
+                <button type="submit">Enviar</button>
 
-    </form>
+                <label for="codigo">Digite o código enviado por e-mail</label>
+                <input type="password" id="codigo" name="codigo" minlength="6" placeholder="Código" required>
+                <button type="submit">Confirmar</button>
+            </form>
 
+            <a href="index.html" class="voltar">Voltar ao login</a>
+        </section>
+    </main>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

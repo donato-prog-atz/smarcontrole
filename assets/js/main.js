@@ -1,3 +1,6 @@
+let usuarioAtual = "Usuário";
+const THEME_KEY = "smartcontrol-theme";
+
 function obterNomeCompleto() {
     const nomeCompleto = prompt("Digite seu nome e sobrenome:");
     const nomeValido = nomeCompleto ? nomeCompleto.trim() : "";
@@ -32,26 +35,60 @@ function formatarDataAtual() {
     const anoAtual = agora.getFullYear();
     const horaAtual = String(agora.getHours()).padStart(2, "0");
     const minutoAtual = String(agora.getMinutes()).padStart(2, "0");
+    const segundoAtual = String(agora.getSeconds()).padStart(2, "0");
     const fusoHorario = formatarFusoHorario(agora.getTimezoneOffset());
 
-    return `${diaSemana}, ${diaMes}/${mesAtual}/${anoAtual} – ${horaAtual}:${minutoAtual} (${fusoHorario})`;
+    return `${diaSemana}, ${diaMes}/${mesAtual}/${anoAtual} – ${horaAtual}:${minutoAtual}:${segundoAtual} (${fusoHorario})`;
 }
 
 function exibirMensagemBoasVindas() {
-    const usuario = obterNomeCompleto();
     const dataAtual = formatarDataAtual();
     const mensagemElemento = document.getElementById("mensagem");
 
     if (mensagemElemento) {
-        
-        mensagemElemento.textContent = `Olá, ${usuario}! Hoje é ${dataAtual}`;
+        mensagemElemento.textContent = `Olá, ${usuarioAtual}! Hoje é ${dataAtual}`;
     }
 }
 
-exibirMensagemBoasVindas();
+function iniciarRelogio() {
+    const mensagemElemento = document.getElementById("mensagem");
 
+    if (!mensagemElemento) {
+        return;
+    }
 
+    usuarioAtual = obterNomeCompleto();
+    exibirMensagemBoasVindas();
+    setInterval(exibirMensagemBoasVindas, 1000);
+}
 
+function aplicarTema(tema) {
+    const modoEscuro = tema === "dark";
+    document.body.classList.toggle("dark-mode", modoEscuro);
+    document.body.setAttribute("data-theme", tema);
+    localStorage.setItem(THEME_KEY, tema);
 
+    const botaoLampada = document.querySelector(".lampada-toggle");
+    if (botaoLampada) {
+        botaoLampada.setAttribute("aria-pressed", String(modoEscuro));
+        botaoLampada.title = modoEscuro ? "Ativar modo claro" : "Ativar modo escuro";
+    }
+}
 
+function inicializarTema() {
+    const botaoLampada = document.querySelector(".lampada-toggle");
+    if (!botaoLampada) {
+        return;
+    }
 
+    const temaSalvo = localStorage.getItem(THEME_KEY) || "light";
+    aplicarTema(temaSalvo);
+
+    botaoLampada.addEventListener("click", () => {
+        const temaAtual = document.body.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        aplicarTema(temaAtual);
+    });
+}
+
+inicializarTema();
+iniciarRelogio();

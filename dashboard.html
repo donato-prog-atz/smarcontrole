@@ -10,20 +10,23 @@
 <body>
     <h2 id="mensagem"></h2>
     <header class="cabecalho">
-       <img class="lampada" src="imagens/icone lapda.png" alt="icone de lampada">
-        <nav class="">
-            <h1>Dashboard</h1>
-            <div class="bars-icon">
-                <i class="fa-solid fa-bars"></i>
-                <ul class="menu" id="icone-menu">
-                    <li><a href="dashboard.html">inicio</a></li>
-                    <li><a href="index.html">Voltar ao login</a></li>
-                    <li><a href="Relatórios">Relatórios</a></li>
-                    <li class="dropdawn">
-                    </li>
-                </ul>
+        <div class="cabecalho-topo">
+            <button class="lampada-toggle" type="button" aria-label="Alternar modo escuro" title="Ativar modo escuro">
+                <img class="lampada" src="imagens/icone lapda.png" alt="icone de lampada">
+            </button>
+            <div class="cabecalho-direita">
+                <h1>Dashboard</h1>
+                <div class="bars-icon">
+                    <i class="fa-solid fa-bars"></i>
+                    <ul class="menu" id="icone-menu">
+                        <li><a href="dashboard.html">inicio</a></li>
+                        <li><a href="index.html">Voltar ao login</a></li>
+                        <li><a href="Relatórios">Relatórios</a></li>
+                        <li class="dropdawn"></li>
+                    </ul>
+                </div>
             </div>
-        </nav>
+        </div>
     </header>
     
     <main>
@@ -117,10 +120,49 @@
                 
             </ul>
         </nav>
-     <h2>Sede da Empresa</h2>
-        <section class="localizacao">
-           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d714.2933598585118!2d-43.34769866420034!3d-21.768814434239335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x989b090b36c947%3A0xcef5eeb62723837e!2sHebert%20Engenharia!5e0!3m2!1spt-BR!2sbr!4v1785959954216!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <section class="relatorio-acesso">
+            <div class="titulo-relatorio">
+                <h3>Relatório de acesso</h3>
+            </div>
+
+            <table class="tabela-acesso">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Setor</th>
+                        <th>Último acesso</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Maria Silva</td>
+                        <td>Gerente</td>
+                        <td>26/08/2026 08:15</td>
+                        <td><span class="status online">Online</span></td>
+                    </tr>
+                    <tr>
+                        <td>João Pereira</td>
+                        <td>Administrador</td>
+                        <td>26/08/2026 07:48</td>
+                        <td><span class="status offline">Offline</span></td>
+                    </tr>
+                    <tr>
+                        <td>Carla Souza</td>
+                        <td>Gerente</td>
+                        <td>26/08/2026 09:02</td>
+                        <td><span class="status online">Online</span></td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
+
+        <div class="endereco-wrapper">
+            <h2>Sede da Empresa</h2>
+            <section class="localizacao">
+               <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d714.2933598585118!2d-43.34769866420034!3d-21.768814434239335!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x989b090b36c947%3A0xcef5eeb62723837e!2sHebert%20Engenharia!5e0!3m2!1spt-BR!2sbr!4v1785959954216!5m2!1spt-BR!2sbr" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </section>
+        </div>
     </main>
    
 <script src="assets/js/main.js"></script>

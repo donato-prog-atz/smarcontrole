@@ -1,32 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cadastro</title>
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="assets/css/cadastro.css">
+    <script src="https://kit.fontawesome.com/3f21966000.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header> <img src="assets/imagem/62be949d-18a4-492d-baa7-9aa6a30f362a(1).jpg" alt="Logo da smart control"width="200" height="200"> </header>
-<form action="index.html" method="get"></form>
-    <label for="nome">Nome completo</label><br>
-        <input type="text" id="nome" name="Nome completo" placeholder="Enter" required> <br> 
-    <label for="nome">Email</label><br> 
-        <input type="text" id="email" name="Email" placeholder="Enter" required> <br>
-    <label for="senha">Senha de Acesso</label><br> 
-        <input type="password" id="senha" name="Senha de Acesso" minlength="8" placeholder="Enter" required><br>
-    <label for="nivel-acesso">Nível de acesso</label><br>
-    <select id="nivel-acesso" name="Nível" required>
-        <option value="" hidden>Selecione uma opção</option>
-        <option value="Gerente">Gerente</option>
-        <option value="Administrador">Administrador</option>
-    </select><br>
-    <label for="termos">Aceito os termos de uso</label><br>
-    <input type="checkbox" id="termos" required><br>
-    <input type="submit" value="Entrar"><br>
-</form>
-<br>
-<a href="index.html">Voltar ao login</a>
+    <header id="cabecalho">
+        <div class="cabecalho-topo">
+            <button class="lampada-toggle" type="button" aria-label="Alternar modo escuro" title="Ativar modo escuro">
+                <img id="lampada" src="imagens/icone lapda.png" alt="Logo Smart Control">
+            </button>
+            <div class="cabecalho-direita">
+                <h1>Crie sua conta</h1>
+                <div class="bars-icon">
+                    <i class="fa-solid fa-bars"></i>
+                    <ul class="menu">
+                        <li><a href="index.html">Login</a></li>
+                        <li><a href="cadastro.html">Cadastro</a></li>
+                        <li><a href="redefinir_senha.html">Redefinir senha</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <main class="container">
+        <section class="form-card">
+            <form action="index.html" method="get" id="formulario">
+                <label for="nome">Nome completo</label>
+                <input type="text" id="nome" name="Nome completo" placeholder="Digite seu nome completo" required>
+
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="Email" placeholder="Digite seu e-mail" required>
+
+                <label for="senha">Senha de acesso</label>
+                <input type="password" id="senha" name="Senha de Acesso" minlength="8" placeholder="Crie sua senha" required>
+
+                <label for="nivel-acesso">Nível de acesso</label>
+                <select id="nivel-acesso" name="Nível" required>
+                    <option value="" hidden>Selecione uma opção</option>
+                    <option value="Gerente">Gerente</option>
+                    <option value="Administrador">Administrador</option>
+                </select>
+
+                <div class="termos">
+                    <input type="checkbox" id="termos" required>
+                    <label for="termos">Aceito os termos de uso</label>
+                </div>
+
+                <button type="submit">Cadastrar</button>
+            </form>
+
+            <a href="index.html" class="voltar">Voltar ao login</a>
+        </section>
+    </main>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
