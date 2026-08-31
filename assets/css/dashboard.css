@@ -73,7 +73,7 @@ body {
 
 .lampada-toggle {
     background: transparent;
-    border: none;
+    border-radius: none;
     cursor: pointer;
     padding: 0;
     display: inline-flex;

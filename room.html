@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <link rel="stylesheet" href="assets/css/room.css">
+    <title>Detalhes do Cômodo</title>
+    <script src="https://kit.fontawesome.com/3f21966000.js" crossorigin="anonymous"></script>
+    </head>
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-topo">
+            <button class="lampada-toggle" type="button" aria-label="Alternar modo escuro" title="Ativar modo escuro">
+                <img class="lampada" src="imagens/icone lapda.png" alt="icone de lampada">
+            </button>
+            <div class="cabecalho-direita">
+                <h1>Dashboard</h1>
+                <div class="bars-icon">
+                    <i class="fa-solid fa-bars"></i>
+                    <ul class="menu" id="icone-menu">
+                        <li><a href="dashboard.html">inicio</a></li>
+                        <li><a href="index.html">Voltar ao login</a></li>
+                        <li><a href="dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="room-main">
+        <div class="room-wrapper">
+            <div class="left-panel">
+                <h2 class="room-title">Aparelhos do Cômodo</h2>
+
+                <div class="device-grid">
+                    <button class="device-card">SMART TV SAMSUNG</button>
+                    <button class="device-card">ROBÔ ASPIRADOR DE PÓ</button>
+                    <button class="device-card">AR CONDICIONADO ELECTROLUX</button>
+                    <button class="device-card">PERSIANA ELÉTRICA MOTORIZADA</button>
+                    <button class="device-card">LÂMPADA SMART INTELIGENTE</button>
+                    <button class="device-card">INTERRUPTOR INTELIGENTE</button>
+                    <button class="device-card">CONTROLE REMOTO INTELIGENTE</button>
+                    <button class="device-card">POLTRONA ELÉTRICA RECLINÁVEL</button>
+                </div>
+            </div>
+
+            <div class="divider" aria-hidden="true"></div>
+
+            <div class="right-panel">
+                <div class="room-data-header">
+                    <a class="back-link" href="dashboard.html">← Voltar</a>
+                    <h2 id="dados-titulo">Dados de Uso - Robô aspirador de pó</h2>
+                </div>
+
+                <div class="data-panels">
+                    <div class="data-panel panel-pie">
+                        <h4>Consumo de energia</h4>
+                        <div id="pie-chart" class="chart-placeholder"></div>
+                        <div class="legend">
+                            <span class="legend-item"><i class="dot green"></i> Baixa</span>
+                            <span class="legend-item"><i class="dot yellow"></i> Média</span>
+                            <span class="legend-item"><i class="dot teal"></i> Alta</span>
+                        </div>
+                    </div>
+
+                    <div class="data-panel panel-bars">
+                        <h4>Consumo de energia</h4>
+                        <div id="bar-chart-1" class="chart-bars"></div>
+                    </div>
+
+                    <div class="data-panel panel-bars">
+                        <h4>Horário de pico de uso</h4>
+                        <div id="bar-chart-2" class="chart-bars"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+<script src="assets/js/room.js"></script>
+</body>
+</html>

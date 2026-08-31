@@ -1,7 +1,21 @@
 let usuarioAtual = "Usuário";
 const THEME_KEY = "smartcontrol-theme";
 
+// Pega o nome do usuário da URL se existir
+function getNomeFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('user');
+}
+
+// Obtém nome do usuário da URL ou via prompt
 function obterNomeCompleto() {
+    // Primeiro tenta pegar da URL
+    const nomeUrl = getNomeFromUrl();
+    if (nomeUrl) {
+        return decodeURIComponent(nomeUrl);
+    }
+    
+    // Se não houver na URL, pede via prompt
     const nomeCompleto = prompt("Digite seu nome e sobrenome:");
     const nomeValido = nomeCompleto ? nomeCompleto.trim() : "";
 
@@ -50,6 +64,7 @@ function exibirMensagemBoasVindas() {
     }
 }
 
+// Inicializa o relógio e exibe a mensagem de boas-vindas
 function iniciarRelogio() {
     const mensagemElemento = document.getElementById("mensagem");
 
@@ -58,6 +73,8 @@ function iniciarRelogio() {
     }
 
     usuarioAtual = obterNomeCompleto();
+    // Armazena o nome para usar quando voltar do room.html
+    sessionStorage.setItem('usuarioAtual', usuarioAtual);
     exibirMensagemBoasVindas();
     setInterval(exibirMensagemBoasVindas, 1000);
 }

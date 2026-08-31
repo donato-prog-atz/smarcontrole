@@ -1,0 +1,147 @@
+/* Estilos específicos da tela de detalhes do cômodo
+   Reutiliza variáveis e estilo geral de dashboard.css para manter identidade visual */
+
+.room-main {
+    padding: 20px 28px 60px;
+}
+
+.room-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 18px auto;
+}
+
+.left-panel {
+    width: 50%;
+    background: transparent;
+}
+
+.right-panel {
+    width: 50%;
+}
+
+.divider {
+    width: 6px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 2px;
+    opacity: 0.85;
+}
+
+.room-title {
+    text-align: center;
+    color: var(--branco);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.6rem;
+    margin-bottom: 18px;
+}
+
+.device-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.device-card {
+    background: #5f6b73;
+    color: #ffffff;
+    border: none;
+    text-transform: uppercase;
+    padding: 14px 12px;
+    font-family: Georgia, 'Times New Roman', serif;
+    letter-spacing: 0.02em;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.device-card:focus,
+.device-card:hover {
+    outline: 2px solid rgba(255,255,255,0.06);
+}
+
+.room-data-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.room-data-header h2 {
+    color: var(--branco);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.35rem;
+    margin: 0;
+}
+
+.back-link {
+    color: var(--branco);
+    text-decoration: none;
+    background: rgba(255,255,255,0.06);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.data-panels {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.data-panel {
+    background: rgba(255,255,255,0.9);
+    color: #1b2b34;
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    min-height: 220px;
+}
+
+.data-panel h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    color: #1b2b34;
+}
+
+.chart-placeholder {
+    width: 100%;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+}
+
+.chart-bars .bar {
+    width: 18px;
+    background: var(--dourado);
+    border-radius: 6px 6px 4px 4px;
+}
+
+.legend {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+}
+
+.legend .dot { width: 12px; height: 12px; display:inline-block; border-radius: 50%; margin-right:6px; }
+.legend .green { background:#57d27a }
+.legend .yellow { background:#f2c94c }
+.legend .teal { background:#3bc3c4 }
+
+@media (max-width: 900px) {
+    .room-wrapper { flex-direction: column; }
+    .left-panel, .right-panel { width: 100%; }
+    .data-panels { flex-direction: column; }
+}
