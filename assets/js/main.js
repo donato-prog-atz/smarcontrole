@@ -75,7 +75,7 @@ function iniciarRelogio() {
     usuarioAtual = obterNomeCompleto();
     // Armazena o nome para usar quando voltar do room.html
     sessionStorage.setItem('usuarioAtual', usuarioAtual);
-    exibirMensagemBoasVindas();
+    exibirMensagemBoasVindas();0
     setInterval(exibirMensagemBoasVindas, 1000);
 }
 

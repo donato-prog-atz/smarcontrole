@@ -389,7 +389,14 @@ h4 {
     border: 0;
     display: block;
 }
-
+#campoBusca {
+    width: 300px;
+    height: 40px;
+    border-radius: 50px;
+    display: flex;
+    margin: auto;
+    border: 2px black solid;
+}
 @media (max-width: 768px) {
     .cabecalho-direita h1 {
         font-size: 1.4rem;
@@ -412,5 +419,17 @@ h4 {
 
     .localizacao {
         max-width: 100%;
+    }
+
+    #campoBusca::placeholder{
+        padding: 10px;
+        margin: auto;
+    }
+
+    #campoBusca {
+        width: 300px;
+        height: 40px;
+        border-radius: 50px;
+        border: 2px black solid;
     }
 }
