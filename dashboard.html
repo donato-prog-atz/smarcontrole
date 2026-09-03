@@ -30,7 +30,6 @@
     </header>
     
     <main>
-        <input type="text" id="campoBusca" placeholder="Pesquisar">
         <nav id="comodos" class="comodos">
             <ul>
                     <li id="lugar"><a  href="room.html?room=Sala">
@@ -125,9 +124,16 @@
             <div class="titulo-relatorio">
                 <h3>Relatório de acesso</h3>
             </div>
-
             <table class="tabela-acesso">
                 <thead>
+                    <tr class="search-row">
+                        <th colspan="4" class="search-cell">
+                            <div class="search-wrapper">
+                                <input type="search" id="campoBusca" placeholder="Pesquisar registros..." aria-label="Pesquisar registros">
+                                <button type="button" id="clearBusca" class="clear-busca" aria-label="Limpar pesquisa">×</button>
+                            </div>
+                        </th>
+                    </tr>
                     <tr>
                         <th>Nome</th>
                         <th>Setor</th>
@@ -165,7 +171,17 @@
             </section>
         </div>
     </main>
-   
+    <!-- Sidebar e overlay adicionados para menu lateral -->
+    <div class="overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">×</button>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">Início</a>
+            <a href="index.html">Voltar ao login</a>
+            <a href="#">Relatórios</a>
+        </nav>
+    </aside>
+
 <script src="assets/js/main.js"></script>
 </body>
 </html>
