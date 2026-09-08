@@ -1,95 +1,109 @@
-// // room.js - comportamento básico da tela de detalhes
-// (function(){
-//     function getRoomFromUrl() {
-//         const params = new URLSearchParams(window.location.search);
-//         return params.get('room') || 'Sala';
-//     }
+const DEVICE_STORAGE_KEY = "smartcontrol-device-list";
+const ROOM_DEVICE_DEFAULTS = [
+    "Smart TV Samsung",
+    "Robô aspirador de pó",
+    "Ar condicionado Electrolux",
+    "Persiana elétrica motorizada",
+    "Lâmpada smart inteligente",
+    "Interruptor inteligente",
+    "Controle remoto inteligente",
+    "Poltrona elétrica reclinável"
+];
 
-//     function setHeaderRoom(roomName) {
-//         const title = document.getElementById('dados-titulo');
-//         if (title) title.textContent = `Dados de Uso - ${roomName}`;
-//     }
+function getRoomDevices() {
+    const stored = localStorage.getItem(DEVICE_STORAGE_KEY);
 
-//     function selectDefaultDevice() {
-//         const first = document.querySelector('.device-card');
-//         if (first) first.classList.add('selected');
-//     }
+    if (!stored) {
+        localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(ROOM_DEVICE_DEFAULTS));
+        return [...ROOM_DEVICE_DEFAULTS];
+    }
 
-//     function attachDeviceHandlers(){
-//         const cards = document.querySelectorAll('.device-card');
-//         cards.forEach(card => {
-//             card.addEventListener('click', () => {
-//                 cards.forEach(c=>c.classList.remove('selected'));
-//                 card.classList.add('selected');
-//                 const nome = card.textContent.trim();
-//                 setHeaderRoom(nome);
-//                 renderChartsFor(nome);
-//             });
-//         });
-//     }
+    try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.filter(Boolean).map(item => String(item).trim());
+        }
+    } catch (error) {
+        console.warn("Lista de dispositivos compartilhada inválida.", error);
+    }
 
-//     function renderChartsFor(name){
-//         // coloque aqui lógica real; por enquanto renderizamos exemplos estáticos
-//         renderPie([30, 45, 25]);
-//         renderBars('#bar-chart-1', [40,60,20,80,55]);
-//         renderBars('#bar-chart-2', [10,70,45,60,30]);
-//     }
+    localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(ROOM_DEVICE_DEFAULTS));
+    return [...ROOM_DEVICE_DEFAULTS];
+}
 
-//     function renderPie(values){
-//         const container = document.getElementById('pie-chart');
-//         if (!container) return;
-//         container.innerHTML = '';
-//         const total = values.reduce((a,b)=>a+b,0);
-//         const colors = ['#57d27a','#f2c94c','#3bc3c4'];
-//         const svgNS = 'http://www.w3.org/2000/svg';
-//         const svg = document.createElementNS(svgNS,'svg');
-//         svg.setAttribute('viewBox','0 0 32 32');
-//         svg.setAttribute('width','140');
-//         svg.setAttribute('height','140');
+function setRoomTitle(name) {
+    const title = document.getElementById("dados-titulo");
+    if (!title) return;
+    title.textContent = `Dados de Uso - ${name}`;
+}
 
-//         let start = 0;
-//         values.forEach((v, i) => {
-//             const slice = document.createElementNS(svgNS,'circle');
-//             const value = v/total;
-//             slice.setAttribute('r','16');
-//             slice.setAttribute('cx','16');
-//             slice.setAttribute('cy','16');
-//             slice.setAttribute('fill','transparent');
-//             slice.setAttribute('stroke', colors[i%colors.length]);
-//             slice.setAttribute('stroke-width','32');
-//             slice.setAttribute('stroke-dasharray', `${value*100} ${100 - value*100}`);
-//             slice.setAttribute('transform', `rotate(${start*3.6} 16 16)`);
-//             start += value*100;
-//             svg.appendChild(slice);
-//         });
+function removeSelectedDevice() {
+    const selected = document.querySelector(".device-card.selected");
+    if (!selected) return;
 
-//         container.appendChild(svg);
-//     }
+    const selectedName = selected.textContent.trim();
+    const updated = getRoomDevices().filter(item => item.toLowerCase() !== selectedName.toLowerCase());
+    localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(updated));
+    renderRoomDevices();
+}
 
-//     function renderBars(selector, values){
-//         const container = document.querySelector(selector);
-//         if (!container) return;
-//         container.innerHTML = '';
-//         const max = Math.max(...values, 1);
-//         values.forEach(v => {
-//             const bar = document.createElement('div');
-//             bar.className = 'bar';
-//             bar.style.height = `${(v / max) * 100}%`;
-//             container.appendChild(bar);
-//         });
-//     }
+function renderRoomDevices() {
+    const grid = document.getElementById("deviceGrid");
+    const removeButton = document.getElementById("removeDeviceButton");
+    if (!grid) return;
 
-//     // Inicialização
-//     document.addEventListener('DOMContentLoaded', ()=>{
-//         const roomName = decodeURIComponent(getRoomFromUrl());
-//         // Atualiza título do cabeçalho (h1) para manter contexto se desejar
-//         const pageTitle = document.querySelector('.cabecalho-direita h1');
-//         if (pageTitle) pageTitle.textContent = 'Dashboard';
+    const devices = getRoomDevices();
+    grid.innerHTML = "";
 
-//         // Define o título dos dados com base no primeiro dispositivo por padrão
-//         setHeaderRoom('Robô aspirador de pó');
-//         attachDeviceHandlers();
-//         selectDefaultDevice();
-//         renderChartsFor();
-//     });
-// })();
+    if (!devices.length) {
+        const empty = document.createElement("p");
+        empty.className = "device-empty-state";
+        empty.textContent = "Nenhum dispositivo cadastrado.";
+        grid.appendChild(empty);
+        if (removeButton) removeButton.disabled = true;
+        setRoomTitle("Selecione um aparelho");
+        return;
+    }
+
+    devices.forEach((device, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "device-card";
+        button.textContent = device.toUpperCase();
+
+        if (index === 0) {
+            button.classList.add("selected");
+            setRoomTitle(device);
+        }
+
+        button.addEventListener("click", () => {
+            document.querySelectorAll(".device-card").forEach(card => {
+                card.classList.toggle("selected", card === button);
+            });
+            setRoomTitle(button.textContent.trim());
+        });
+
+        grid.appendChild(button);
+    });
+
+    if (removeButton) {
+        removeButton.disabled = false;
+    }
+}
+
+function setupRoomDeviceManagement() {
+    const removeButton = document.getElementById("removeDeviceButton");
+    if (!removeButton) return;
+
+    removeButton.addEventListener("click", removeSelectedDevice);
+}
+
+window.refreshRoomDeviceList = function (devices) {
+    if (Array.isArray(devices)) {
+        localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(devices));
+    }
+    renderRoomDevices();
+};
+
+renderRoomDevices();
+setupRoomDeviceManagement();

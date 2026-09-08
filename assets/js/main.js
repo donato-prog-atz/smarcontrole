@@ -1,5 +1,199 @@
 let usuarioAtual = "Usuário";
 const THEME_KEY = "smartcontrol-theme";
+const DEVICE_STORAGE_KEY = "smartcontrol-device-list";
+const DEFAULT_DEVICES = [
+    "Smart TV Samsung",
+    "Robô aspirador de pó",
+    "Ar condicionado Electrolux",
+    "Persiana elétrica motorizada",
+    "Lâmpada smart inteligente",
+    "Interruptor inteligente",
+    "Controle remoto inteligente",
+    "Poltrona elétrica reclinável"
+];
+
+function getDevices() {
+    const stored = localStorage.getItem(DEVICE_STORAGE_KEY);
+
+    if (!stored) {
+        localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(DEFAULT_DEVICES));
+        return [...DEFAULT_DEVICES];
+    }
+
+    try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed.filter(Boolean).map(item => String(item).trim());
+        }
+    } catch (error) {
+        console.warn("Lista de dispositivos inválida. Recriando padrão.", error);
+    }
+
+    localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(DEFAULT_DEVICES));
+    return [...DEFAULT_DEVICES];
+}
+
+function saveDevices(devices) {
+    const sanitized = devices
+        .map(item => String(item).trim())
+        .filter(Boolean)
+        .filter((item, index, list) => list.findIndex(entry => entry.toLowerCase() === item.toLowerCase()) === index);
+
+    localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(sanitized));
+    return sanitized;
+}
+
+function addDeviceToStorage(name) {
+    const normalized = String(name || "").replace(/\s+/g, " ").trim();
+    if (!normalized) {
+        return false;
+    }
+
+    const list = getDevices();
+    const exists = list.some(item => item.toLowerCase() === normalized.toLowerCase());
+    if (exists) {
+        return false;
+    }
+
+    const updated = saveDevices([...list, normalized]);
+    if (typeof window.refreshRoomDeviceList === "function") {
+        window.refreshRoomDeviceList(updated);
+    }
+    return true;
+}
+
+function removeDeviceFromStorage(name) {
+    const target = String(name || "").trim();
+    if (!target) {
+        return getDevices();
+    }
+
+    const updated = saveDevices(getDevices().filter(item => item.toLowerCase() !== target.toLowerCase()));
+
+    if (typeof window.refreshRoomDeviceList === "function") {
+        window.refreshRoomDeviceList(updated);
+    }
+
+    return updated;
+}
+
+function setupDeviceManager() {
+    const modal = document.getElementById("devicesModal");
+    const form = document.getElementById("deviceForm");
+    const input = document.getElementById("deviceName");
+    const list = document.getElementById("deviceList");
+    const openButtons = document.querySelectorAll('[data-action="manage-devices"]');
+    const closeBtn = document.getElementById("devicesModalClose");
+
+    if (!modal || !form || !input || !list) {
+        return;
+    }
+
+    const renderList = () => {
+        const devices = getDevices();
+        list.innerHTML = "";
+
+        if (!devices.length) {
+            const empty = document.createElement("li");
+            empty.className = "device-empty";
+            empty.textContent = "Nenhum dispositivo cadastrado.";
+            list.appendChild(empty);
+            return;
+        }
+
+        devices.forEach(device => {
+            const item = document.createElement("li");
+            item.className = "device-item";
+
+            const label = document.createElement("span");
+            label.textContent = device;
+
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "device-remove-btn";
+            button.dataset.remove = device;
+            button.textContent = "Remover";
+
+            item.appendChild(label);
+            item.appendChild(button);
+            list.appendChild(item);
+        });
+    };
+
+    openButtons.forEach(button => {
+        button.addEventListener("click", event => {
+            const href = button.getAttribute("href");
+            if (href) {
+                return;
+            }
+
+            event.preventDefault();
+            renderList();
+            modal.classList.add("open");
+            modal.setAttribute("aria-hidden", "false");
+            input.focus();
+        });
+    });
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+            modal.classList.remove("open");
+            modal.setAttribute("aria-hidden", "true");
+        });
+    }
+
+    modal.addEventListener("click", event => {
+        if (event.target === modal) {
+            modal.classList.remove("open");
+            modal.setAttribute("aria-hidden", "true");
+        }
+    });
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+        const value = input.value.trim();
+
+        if (!value) {
+            input.focus();
+            return;
+        }
+
+        const inserted = addDeviceToStorage(value);
+        if (!inserted) {
+            input.setCustomValidity("Este dispositivo já existe.");
+            input.reportValidity();
+            return;
+        }
+
+        input.setCustomValidity("");
+        input.value = "";
+        renderList();
+    });
+
+    list.addEventListener("click", event => {
+        const button = event.target.closest(".device-remove-btn");
+        if (!button) return;
+
+        removeDeviceFromStorage(button.dataset.remove);
+        renderList();
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && modal.classList.contains("open")) {
+            modal.classList.remove("open");
+            modal.setAttribute("aria-hidden", "true");
+        }
+    });
+
+    renderList();
+}
+
+window.smartControlDevices = {
+    getDevices,
+    addDeviceToStorage,
+    removeDeviceFromStorage,
+    saveDevices
+};
 
 // Pega o nome do usuário da URL se existir
 function getNomeFromUrl() {
@@ -235,3 +429,4 @@ function setupSidebar() {
 }
 
 setupSidebar();
+setupDeviceManager();

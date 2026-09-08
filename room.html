@@ -33,15 +33,10 @@
             <div class="left-panel">
                 <h2 class="room-title">Aparelhos do Cômodo</h2>
 
-                <div class="device-grid">
-                    <button class="device-card">SMART TV SAMSUNG</button>
-                    <button class="device-card">ROBÔ ASPIRADOR DE PÓ</button>
-                    <button class="device-card">AR CONDICIONADO ELECTROLUX</button>
-                    <button class="device-card">PERSIANA ELÉTRICA MOTORIZADA</button>
-                    <button class="device-card">LÂMPADA SMART INTELIGENTE</button>
-                    <button class="device-card">INTERRUPTOR INTELIGENTE</button>
-                    <button class="device-card">CONTROLE REMOTO INTELIGENTE</button>
-                    <button class="device-card">POLTRONA ELÉTRICA RECLINÁVEL</button>
+                <div class="device-grid" id="deviceGrid"></div>
+                <div class="device-controls">
+                    <button type="button" id="removeDeviceButton" class="remove-device-button">Remover dispositivo selecionado</button>
+                    <button type="button" class="sidebar-action" data-action="manage-devices">Adicionar ou remover</button>
                 </div>
             </div>
 
@@ -78,6 +73,7 @@
         </div>
     </main>
 
+<script src="assets/js/main.js"></script>
 <script src="assets/js/room.js"></script>
 </body>
 </html>
