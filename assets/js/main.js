@@ -12,6 +12,26 @@ const DEFAULT_DEVICES = [
     "Poltrona elétrica reclinável"
 ];
 
+function normalizeDeviceName(value) {
+    return String(value ?? "").replace(/\s+/g, " ").trim();
+}
+
+function sanitizeDevices(devices) {
+    const cleaned = (Array.isArray(devices) ? devices : [])
+        .map(item => normalizeDeviceName(item))
+        .filter(Boolean);
+
+    const unique = [];
+    cleaned.forEach(item => {
+        const alreadyExists = unique.some(existing => existing.toLowerCase() === item.toLowerCase());
+        if (!alreadyExists) {
+            unique.push(item);
+        }
+    });
+
+    return unique;
+}
+
 function getDevices() {
     const stored = localStorage.getItem(DEVICE_STORAGE_KEY);
 
@@ -23,7 +43,7 @@ function getDevices() {
     try {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.filter(Boolean).map(item => String(item).trim());
+            return sanitizeDevices(parsed);
         }
     } catch (error) {
         console.warn("Lista de dispositivos inválida. Recriando padrão.", error);
@@ -34,28 +54,24 @@ function getDevices() {
 }
 
 function saveDevices(devices) {
-    const sanitized = devices
-        .map(item => String(item).trim())
-        .filter(Boolean)
-        .filter((item, index, list) => list.findIndex(entry => entry.toLowerCase() === item.toLowerCase()) === index);
-
+    const sanitized = sanitizeDevices(devices);
     localStorage.setItem(DEVICE_STORAGE_KEY, JSON.stringify(sanitized));
     return sanitized;
 }
 
 function addDeviceToStorage(name) {
-    const normalized = String(name || "").replace(/\s+/g, " ").trim();
+    const normalized = normalizeDeviceName(name);
     if (!normalized) {
         return false;
     }
 
-    const list = getDevices();
-    const exists = list.some(item => item.toLowerCase() === normalized.toLowerCase());
+    const devices = getDevices();
+    const exists = devices.some(item => item.toLowerCase() === normalized.toLowerCase());
     if (exists) {
         return false;
     }
 
-    const updated = saveDevices([...list, normalized]);
+    const updated = saveDevices([...devices, normalized]);
     if (typeof window.refreshRoomDeviceList === "function") {
         window.refreshRoomDeviceList(updated);
     }
@@ -63,7 +79,7 @@ function addDeviceToStorage(name) {
 }
 
 function removeDeviceFromStorage(name) {
-    const target = String(name || "").trim();
+    const target = normalizeDeviceName(name);
     if (!target) {
         return getDevices();
     }
@@ -75,6 +91,11 @@ function removeDeviceFromStorage(name) {
     }
 
     return updated;
+}
+
+function toggleModalState(modal, shouldOpen) {
+    modal.classList.toggle("open", shouldOpen);
+    modal.setAttribute("aria-hidden", String(!shouldOpen));
 }
 
 function setupDeviceManager() {
@@ -94,10 +115,10 @@ function setupDeviceManager() {
         list.innerHTML = "";
 
         if (!devices.length) {
-            const empty = document.createElement("li");
-            empty.className = "device-empty";
-            empty.textContent = "Nenhum dispositivo cadastrado.";
-            list.appendChild(empty);
+            const emptyItem = document.createElement("li");
+            emptyItem.className = "device-empty";
+            emptyItem.textContent = "Nenhum dispositivo cadastrado.";
+            list.appendChild(emptyItem);
             return;
         }
 
@@ -108,44 +129,37 @@ function setupDeviceManager() {
             const label = document.createElement("span");
             label.textContent = device;
 
-            const button = document.createElement("button");
-            button.type = "button";
-            button.className = "device-remove-btn";
-            button.dataset.remove = device;
-            button.textContent = "Remover";
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.className = "device-remove-btn";
+            removeButton.dataset.remove = device;
+            removeButton.textContent = "Remover";
 
-            item.appendChild(label);
-            item.appendChild(button);
+            item.append(label, removeButton);
             list.appendChild(item);
         });
     };
 
     openButtons.forEach(button => {
         button.addEventListener("click", event => {
-            const href = button.getAttribute("href");
-            if (href) {
+            if (button.getAttribute("href")) {
                 return;
             }
 
             event.preventDefault();
             renderList();
-            modal.classList.add("open");
-            modal.setAttribute("aria-hidden", "false");
+            toggleModalState(modal, true);
             input.focus();
         });
     });
 
     if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-            modal.classList.remove("open");
-            modal.setAttribute("aria-hidden", "true");
-        });
+        closeBtn.addEventListener("click", () => toggleModalState(modal, false));
     }
 
     modal.addEventListener("click", event => {
         if (event.target === modal) {
-            modal.classList.remove("open");
-            modal.setAttribute("aria-hidden", "true");
+            toggleModalState(modal, false);
         }
     });
 
@@ -172,7 +186,9 @@ function setupDeviceManager() {
 
     list.addEventListener("click", event => {
         const button = event.target.closest(".device-remove-btn");
-        if (!button) return;
+        if (!button) {
+            return;
+        }
 
         removeDeviceFromStorage(button.dataset.remove);
         renderList();
@@ -180,8 +196,7 @@ function setupDeviceManager() {
 
     document.addEventListener("keydown", event => {
         if (event.key === "Escape" && modal.classList.contains("open")) {
-            modal.classList.remove("open");
-            modal.setAttribute("aria-hidden", "true");
+            toggleModalState(modal, false);
         }
     });
 
@@ -195,24 +210,19 @@ window.smartControlDevices = {
     saveDevices
 };
 
-// Pega o nome do usuário da URL se existir
 function getNomeFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('user');
+    return params.get("user");
 }
 
-// Obtém nome do usuário da URL ou via prompt
 function obterNomeCompleto() {
-    // Primeiro tenta pegar da URL
     const nomeUrl = getNomeFromUrl();
     if (nomeUrl) {
         return decodeURIComponent(nomeUrl);
     }
-    
-    // Se não houver na URL, pede via prompt
+
     const nomeCompleto = prompt("Digite seu nome e sobrenome:");
     const nomeValido = nomeCompleto ? nomeCompleto.trim() : "";
-
     return nomeValido || "Usuário";
 }
 
@@ -221,7 +231,6 @@ function formatarFusoHorario(offsetMinutos) {
     const valorAbsoluto = Math.abs(offsetMinutos);
     const horas = String(Math.floor(valorAbsoluto / 60)).padStart(2, "0");
     const minutos = String(valorAbsoluto % 60).padStart(2, "0");
-
     return `${sinal}${horas}:${minutos}`;
 }
 
@@ -250,115 +259,149 @@ function formatarDataAtual() {
 }
 
 function exibirMensagemBoasVindas() {
-    const dataAtual = formatarDataAtual();
     const mensagemElemento = document.getElementById("mensagem");
-
-    if (mensagemElemento) {
-        mensagemElemento.textContent = `Olá, ${usuarioAtual}! Hoje é ${dataAtual}`;
+    if (!mensagemElemento) {
+        return;
     }
+
+    mensagemElemento.textContent = `Olá, ${usuarioAtual}! Hoje é ${formatarDataAtual()}`;
 }
 
-// Inicializa o relógio e exibe a mensagem de boas-vindas
 function iniciarRelogio() {
     const mensagemElemento = document.getElementById("mensagem");
-
     if (!mensagemElemento) {
         return;
     }
 
     usuarioAtual = obterNomeCompleto();
-    // Armazena o nome para usar quando voltar do room.html
-    sessionStorage.setItem('usuarioAtual', usuarioAtual);
+    sessionStorage.setItem("usuarioAtual", usuarioAtual);
     exibirMensagemBoasVindas();
     setInterval(exibirMensagemBoasVindas, 1000);
 }
 
+function debounce(fn, delay) {
+    let timer;
+    return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn(...args), delay);
+    };
+}
+
+function normalizeForSearch(value = "") {
+    return String(value)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+}
+
+function escapeHTML(value = "") {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+function highlightCell(cell, term) {
+    const originalText = cell.dataset.original || cell.textContent;
+    if (!cell.dataset.original) {
+        cell.dataset.original = originalText;
+    }
+
+    if (!term) {
+        cell.innerHTML = escapeHTML(originalText);
+        return;
+    }
+
+    const chars = Array.from(originalText);
+    let normalized = "";
+    const map = [];
+
+    chars.forEach(char => {
+        const normalizedChar = char.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        for (let i = 0; i < normalizedChar.length; i += 1) {
+            map.push(chars.indexOf(char));
+        }
+        normalized += normalizedChar;
+    });
+
+    const termNormalized = normalizeForSearch(term);
+    const normalizedLower = normalized.toLowerCase();
+    const matches = [];
+    let start = 0;
+
+    while (start < normalizedLower.length) {
+        const index = normalizedLower.indexOf(termNormalized, start);
+        if (index === -1) {
+            break;
+        }
+
+        matches.push({ index, length: termNormalized.length });
+        start = index + termNormalized.length;
+    }
+
+    if (!matches.length) {
+        cell.innerHTML = escapeHTML(originalText);
+        return;
+    }
+
+    let html = "";
+    let lastIndex = 0;
+
+    matches.forEach(match => {
+        const startIndex = map[match.index] ?? 0;
+        const endIndex = map[match.index + match.length - 1] ?? originalText.length;
+        html += escapeHTML(originalText.slice(lastIndex, startIndex));
+        html += `<mark>${escapeHTML(originalText.slice(startIndex, endIndex + 1))}</mark>`;
+        lastIndex = endIndex + 1;
+    });
+
+    html += escapeHTML(originalText.slice(lastIndex));
+    cell.innerHTML = html;
+}
+
 function setupBuscaTabela() {
-    const campo = document.getElementById('campoBusca');
-    const tbody = document.querySelector('.tabela-acesso tbody');
-    if (!campo || !tbody) return;
-
-    function debounce(fn, wait) {
-        let t;
-        return function(...args) {
-            clearTimeout(t);
-            t = setTimeout(() => fn.apply(this, args), wait);
-        };
+    const campo = document.getElementById("campoBusca");
+    const tbody = document.querySelector(".tabela-acesso tbody");
+    if (!campo || !tbody) {
+        return;
     }
 
-    function escapeHTML(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
+    const clearBtn = document.getElementById("clearBusca");
 
-    function normalizeForSearch(s) {
-        return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-    }
-
-    function highlightCell(cell, term) {
-        const orig = cell.dataset.original || cell.textContent;
-        if (!cell.dataset.original) cell.dataset.original = orig;
-        if (!term) {
-            cell.innerHTML = escapeHTML(orig);
-            return;
-        }
-
-        const origChars = Array.from(orig);
-        let norm = '';
-        const map = [];
-        for (let i = 0; i < origChars.length; i++) {
-            const c = origChars[i];
-            const cNorm = c.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            for (let j = 0; j < cNorm.length; j++) map.push(i);
-            norm += cNorm;
-        }
-
-        const lowerNorm = norm.toLowerCase();
-        const termNorm = normalizeForSearch(term);
-        let lastOrigPos = 0;
-        let pos = 0;
-        let out = '';
-
-        while (true) {
-            const idx = lowerNorm.indexOf(termNorm, pos);
-            if (idx === -1) break;
-            const origStart = map[idx];
-            const origEnd = map[idx + termNorm.length - 1] + 1;
-            out += escapeHTML(orig.slice(lastOrigPos, origStart));
-            out += '<mark>' + escapeHTML(orig.slice(origStart, origEnd)) + '</mark>';
-            lastOrigPos = origEnd;
-            pos = idx + termNorm.length;
-        }
-        out += escapeHTML(orig.slice(lastOrigPos));
-        cell.innerHTML = out;
-    }
-
-    const clearBtn = document.getElementById('clearBusca');
-
-    const handler = debounce((e) => {
-        const termo = (e.target && typeof e.target.value === 'string') ? e.target.value.trim() : '';
+    const applySearch = () => {
+        const termo = campo.value.trim();
         const termoNorm = normalizeForSearch(termo);
-        const linhas = Array.from(tbody.querySelectorAll('tr'));
+        const linhas = Array.from(tbody.querySelectorAll("tr"));
+
         linhas.forEach(row => {
-            const texto = Array.from(row.querySelectorAll('td')).map(td => td.textContent).join(' ');
-            const textoNorm = normalizeForSearch(texto.replace(/\s+/g, ' '));
-            const mostrar = termo === '' || textoNorm.indexOf(termoNorm) !== -1;
-            row.style.display = mostrar ? '' : 'none';
-            Array.from(row.querySelectorAll('td')).forEach(td => {
-                if (mostrar && termo !== '') highlightCell(td, termo);
-                else highlightCell(td, '');
+            const texto = Array.from(row.querySelectorAll("td"))
+                .map(td => td.textContent)
+                .join(" ");
+            const textoNorm = normalizeForSearch(texto.replace(/\s+/g, " "));
+            const mostrar = termo === "" || textoNorm.includes(termoNorm);
+
+            row.style.display = mostrar ? "" : "none";
+            Array.from(row.querySelectorAll("td")).forEach(td => {
+                highlightCell(td, mostrar && termo ? termo : "");
             });
         });
-        if (clearBtn) clearBtn.style.display = termo ? 'inline-block' : 'none';
-    }, 180);
 
-    campo.addEventListener('input', handler);
+        if (clearBtn) {
+            clearBtn.style.display = termo ? "inline-block" : "none";
+        }
+    };
+
+    campo.addEventListener("input", debounce(applySearch, 180));
+
     if (clearBtn) {
-        clearBtn.addEventListener('click', () => {
-            campo.value = '';
+        clearBtn.addEventListener("click", () => {
+            campo.value = "";
             campo.focus();
-            campo.dispatchEvent(new Event('input', { bubbles: true }));
+            campo.dispatchEvent(new Event("input", { bubbles: true }));
         });
-        clearBtn.style.display = campo.value ? 'inline-block' : 'none';
+        clearBtn.style.display = campo.value ? "inline-block" : "none";
     }
 }
 
@@ -390,43 +433,49 @@ function inicializarTema() {
     });
 }
 
-inicializarTema();
-iniciarRelogio();
-// Inicializa a funcionalidade de busca na tabela de acessos
-setupBuscaTabela();
-
-// Setup da sidebar lateral ativada por clique no ícone de menu
 function setupSidebar() {
-    const bars = document.querySelector('.bars-icon');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    const closeBtn = document.getElementById('sidebarClose');
-    if (!bars || !sidebar || !overlay) return;
-
-    function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('open');
+    const bars = document.querySelector(".bars-icon");
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("sidebarOverlay");
+    const closeBtn = document.getElementById("sidebarClose");
+    if (!bars || !sidebar || !overlay) {
+        return;
     }
 
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('open');
-    }
+    const openSidebar = () => {
+        sidebar.classList.add("open");
+        overlay.classList.add("open");
+    };
 
-    bars.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (sidebar.classList.contains('open')) closeSidebar();
-        else openSidebar();
+    const closeSidebar = () => {
+        sidebar.classList.remove("open");
+        overlay.classList.remove("open");
+    };
+
+    bars.addEventListener("click", event => {
+        event.stopPropagation();
+        if (sidebar.classList.contains("open")) {
+            closeSidebar();
+            return;
+        }
+
+        openSidebar();
     });
 
-    overlay.addEventListener('click', closeSidebar);
-    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener("click", closeSidebar);
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closeSidebar);
+    }
 
-    // Fecha sidebar ao pressionar Escape
-    document.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && sidebar.classList.contains("open")) {
+            closeSidebar();
+        }
     });
 }
 
+inicializarTema();
+iniciarRelogio();
+setupBuscaTabela();
 setupSidebar();
 setupDeviceManager();
