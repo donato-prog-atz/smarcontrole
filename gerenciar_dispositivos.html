@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <title>Gerenciar Dispositivos</title>
+    <script src="https://kit.fontawesome.com/3f21966000.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="cabecalho-topo">
+            <button class="lampada-toggle" type="button" aria-label="Alternar modo escuro" title="Ativar modo escuro">
+                <img class="lampada" src="imagens/icone lapda.png" alt="icone de lampada">
+            </button>
+            <div class="cabecalho-direita">
+                <h1>Adicionar Dispositivo</h1>
+                <div class="bars-icon">
+                    <i class="fa-solid fa-bars"></i>
+                    <ul class="menu" id="icone-menu">
+                        <li><a href="dashboard.html">Início</a></li>
+                        <li><a href="index.html">Voltar ao login</a></li>
+                        <li><a href="gerenciar_dispositivos.html">Gerenciar dispositivos</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="manage-main">
+        <section class="manage-card">
+            <h2 class="manage-card-title">Deseja adicionar ou remover dispositivo?</h2>
+            <div class="manage-card-actions">
+                <button type="button" id="openAddPanel" class="manage-action-btn manage-action-btn-add">Cadastrar dispositivo</button>
+                <button type="button" id="openRemovePanel" class="manage-action-btn manage-action-btn-remove">Remover dispositivo</button>
+            </div>
+        </section>
+    </main>
+
+    <div class="overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose" aria-label="Fechar menu">×</button>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html">Início</a>
+            <a href="index.html">Voltar ao login</a>
+            <a href="gerenciar_dispositivos.html">Gerenciar dispositivos</a>
+        </nav>
+    </aside>
+
+    <div class="management-panel" id="managementPanel" aria-hidden="true">
+        <div class="management-panel-content">
+            <button type="button" class="modal-close" id="closeManagementPanel" aria-label="Fechar gerenciador">×</button>
+            <h3 id="managementPanelTitle">Cadastrar dispositivo</h3>
+
+            <div class="manage-form">
+                <label for="manageRoomSelect">Escolha o cômodo:</label>
+                <select id="manageRoomSelect"></select>
+
+                <div id="manageDeviceInputWrapper">
+                    <label for="manageDeviceInput" id="manageDeviceLabel">Digite o nome do dispositivo:</label>
+                    <input id="manageDeviceInput" type="text" placeholder="Ex: TV, Lâmpada, Ventilador...">
+                </div>
+
+                <div id="manageDeviceSelectWrapper" style="display: none;">
+                    <label for="manageDeviceSelect" id="manageDeviceSelectLabel">Escolha o dispositivo:</label>
+                    <select id="manageDeviceSelect"></select>
+                </div>
+            </div>
+
+            <button type="button" id="confirmManagementAction" class="manage-confirm-btn">Adicionar dispositivo</button>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/comodo.js"></script>
+</body>
+</html>

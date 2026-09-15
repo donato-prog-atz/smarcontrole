@@ -2,24 +2,30 @@
    Reutiliza variáveis e estilo geral de dashboard.css para manter identidade visual */
 
 .room-main {
-    padding: 20px 28px 60px;
+    padding: 16px 22px 32px;
 }
 
 .room-wrapper {
     display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    max-width: 1200px;
+    gap: 22px;
+    align-items: stretch;
+    max-width: 1280px;
     margin: 18px auto;
+    background: rgba(24, 72, 98, 0.22);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px 18px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .left-panel {
-    width: 50%;
+    width: 42%;
     background: transparent;
+    padding: 6px 0;
 }
 
 .right-panel {
-    width: 50%;
+    width: 58%;
 }
 
 .divider {
@@ -30,32 +36,36 @@
 }
 
 .room-title {
-    text-align: center;
+    text-align: left;
     color: var(--branco);
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 1.6rem;
-    margin-bottom: 18px;
+    margin: 0 0 18px 6px;
 }
 
 .device-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 4px 0;
 }
 
 .device-card {
-    background: #5f6b73;
+    background: rgba(119, 132, 141, 0.95);
     color: #ffffff;
     border: none;
-    text-transform: uppercase;
-    padding: 14px 12px;
+    text-transform: none;
+    padding: 18px 16px;
     font-family: Georgia, 'Times New Roman', serif;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 64px;
+    font-size: 1.06rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .device-card:focus,
@@ -67,7 +77,8 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
+    min-height: 56px;
 }
 
 .room-data-header h2 {
@@ -80,25 +91,27 @@
 .back-link {
     color: var(--branco);
     text-decoration: none;
-    background: rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.08);
     padding: 8px 12px;
     border-radius: 8px;
     font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.06);
 }
 
 .data-panels {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    align-items: stretch;
 }
 
 .data-panel {
-    background: rgba(255,255,255,0.9);
+    background: rgba(241, 246, 250, 0.9);
     color: #1b2b34;
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
+    padding: 14px 12px;
+    border-radius: 10px;
     min-height: 220px;
+    box-shadow: 0 4px 10px rgba(12, 25, 35, 0.08);
 }
 
 .data-panel h4 {
@@ -113,6 +126,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
 }
 
 .chart-bars {
@@ -120,6 +134,7 @@
     align-items: flex-end;
     gap: 8px;
     height: 120px;
+    padding-top: 8px;
 }
 
 .chart-bars .bar {
@@ -130,9 +145,21 @@
 
 .legend {
     display: flex;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 10px;
+    margin-top: 12px;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.device-empty-state {
+    background: rgba(255,255,255,0.08);
+    border: 1px dashed rgba(255,255,255,0.35);
+    border-radius: 10px;
+    color: rgba(255,255,255,0.8);
+    padding: 24px 16px;
+    text-align: center;
+    font-size: 0.95rem;
 }
 
 .legend .dot { width: 12px; height: 12px; display:inline-block; border-radius: 50%; margin-right:6px; }

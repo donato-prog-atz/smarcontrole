@@ -382,6 +382,175 @@ h4 {
     border: 0;
     display: block;
 }
+
+.room-device-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 8px 4px;
+    margin-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.room-device-list li {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 7px 10px;
+    color: var(--texto);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.manage-main {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 34px 18px 50px;
+}
+
+.manage-card {
+    width: min(375px, calc(100% - 24px));
+    min-height: 470px;
+    background: linear-gradient(180deg, #7aa9c4 0%, #6f9bb1 100%);
+    border-radius: 12px;
+    padding: 32px 28px;
+    box-shadow: 0 16px 38px rgba(7, 18, 26, 0.24);
+}
+
+.manage-card-title {
+    color: #0f1c24;
+    font-size: clamp(1.45rem, 2vw, 1.9rem);
+    line-height: 1.25;
+    margin-bottom: 30px;
+    text-align: left;
+    font-family: Georgia, 'Times New Roman', serif;
+    max-width: 255px;
+}
+
+.manage-card-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.manage-action-btn,
+.manage-confirm-btn {
+    border: none;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: #111;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 10px 18px rgba(11, 29, 36, 0.15);
+}
+
+.manage-action-btn {
+    width: min(193px, 100%);
+    min-height: 59px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.manage-action-btn:hover,
+.manage-confirm-btn:hover,
+.manage-action-btn:focus-visible,
+.manage-confirm-btn:focus-visible {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+.manage-action-btn:active,
+.manage-confirm-btn:active {
+    transform: translateY(0);
+}
+
+.manage-action-btn-add {
+    background: #1597a5;
+}
+
+.manage-action-btn-remove {
+    background: #df1721;
+}
+
+.management-panel {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+    z-index: 50;
+}
+
+.management-panel.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.management-panel-content {
+    position: relative;
+    width: min(420px, calc(100vw - 28px));
+    background: linear-gradient(180deg, #7daec8 0%, #6d95b0 100%);
+    border-radius: 12px;
+    padding: 28px 24px 22px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    color: #112633;
+}
+
+.management-panel-content h3 {
+    font-size: 1.7rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    margin-bottom: 18px;
+    text-align: center;
+    color: #112633;
+}
+
+.manage-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.manage-form label {
+    font-weight: 700;
+    color: #102631;
+}
+
+.manage-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(17, 38, 51, 0.22);
+    background: rgba(255, 255, 255, 0.92);
+    color: #0e1d2a;
+    font-size: 1rem;
+}
+
+.manage-confirm-btn {
+    width: 100%;
+    padding: 12px 18px;
+    background: #1a606d;
+    color: #f1fafe;
+}
+
+.manage-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
 #campoBusca {
     width: 300px;
     height: 40px;
